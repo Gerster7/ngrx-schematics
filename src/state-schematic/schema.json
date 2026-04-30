@@ -1,0 +1,23 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"$id": "state-schematic",
+	"title": "State Schematic",
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string",
+			"description": "Nombre del estado NgRx a generar (ej: producto, usuario, carrito).",
+			"$default": {
+				"$source": "argv",
+				"index": 0
+			},
+			"x-prompt": "¿Qué nombre tendrá el estado?"
+		},
+		"path": {
+			"type": "string",
+			"description": "Ruta destino donde se generarán los archivos (relativa a la raíz del proyecto). Por defecto: src/app/core/state.",
+			"default": "src/app/core/state"
+		}
+	},
+	"required": ["name"]
+}

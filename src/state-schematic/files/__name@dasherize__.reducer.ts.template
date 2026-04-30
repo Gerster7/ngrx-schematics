@@ -1,0 +1,57 @@
+import { createReducer, on, createFeature } from '@ngrx/store';
+import { <%= classify(name) %>Actions } from '<%= path %>/<%= dasherize(name) %>/<%= dasherize(name) %>.actions';
+import { <%= classify(name) %>Model } from 'src/app/core/services/<%= dasherize(name) %>/<%= dasherize(name) %>.model';
+import {
+  EntityState,
+  createEntityAdapter,
+  EntityAdapter,
+} from '@ngrx/entity';
+
+// Definir el estado con EntityState
+export interface <%= classify(name) %>State extends EntityState<<%= classify(name) %>Model> {
+  loading: boolean;
+  error: string | null;
+}
+
+// Crear un adaptador de entidad.
+// ⚠️ Ajustá 'id' por la clave primaria real de tu modelo.
+export const adapter: EntityAdapter<<%= classify(name) %>Model> =
+  createEntityAdapter<<%= classify(name) %>Model>({
+    selectId: (<%= camelize(name) %>: <%= classify(name) %>Model) => <%= camelize(name) %>.id,
+    // Opcional: descomentar para ordenar los resultados
+    // sortComparer: (a, b) => a.id.localeCompare(b.id),
+  });
+
+// Estado inicial
+export const initialState: <%= classify(name) %>State = adapter.getInitialState({
+  loading: false,
+  error: null,
+});
+
+export const <%= camelize(name) %>Reducer = createReducer(
+  initialState,
+
+  on(<%= classify(name) %>Actions.load<%= classify(name) %>, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(<%= classify(name) %>Actions.load<%= classify(name) %>Success, (state, { <%= camelize(name) %> }) =>
+    adapter.setAll(<%= camelize(name) %>, {
+      ...state,
+      loading: false,
+    })
+  ),
+
+  on(<%= classify(name) %>Actions.load<%= classify(name) %>Failure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  }))
+);
+
+export const <%= camelize(name) %>Feature = createFeature({
+  name: '<%= dasherize(name) %>',
+  reducer: <%= camelize(name) %>Reducer,
+});

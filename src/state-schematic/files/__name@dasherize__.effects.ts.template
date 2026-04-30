@@ -1,0 +1,27 @@
+import { inject } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { <%= classify(name) %>Actions } from '<%= path %>/<%= dasherize(name) %>/<%= dasherize(name) %>.actions';
+import { <%= classify(name) %>Service } from 'src/app/core/services/<%= dasherize(name) %>/<%= dasherize(name) %>.service';
+
+export const load<%= classify(name) %>$ = createEffect(
+  (actions$ = inject(Actions), service = inject(<%= classify(name) %>Service)) =>
+    actions$.pipe(
+      ofType(<%= classify(name) %>Actions.load<%= classify(name) %>),
+      switchMap(() =>
+        service.get<%= classify(name) %>().pipe(
+          map((<%= camelize(name) %>) =>
+            <%= classify(name) %>Actions.load<%= classify(name) %>Success({ <%= camelize(name) %>: <%= camelize(name) %>.datos })
+          ),
+          catchError((err) =>
+            of(
+              <%= classify(name) %>Actions.load<%= classify(name) %>Failure({
+                error: err.message ?? 'Error desconocido',
+              })
+            )
+          )
+        )
+      )
+    ),
+  { functional: true }
+);

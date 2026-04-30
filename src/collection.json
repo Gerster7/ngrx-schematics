@@ -1,0 +1,10 @@
+{
+	"schematics": {
+		"state-schematic": {
+			"factory": "./state-schematic/index#stateSchematic",
+			"schema": "./state-schematic/schema.json",
+			"description": "Crea un estado básico con NgRx (actions, reducer, selectors, effects)",
+			"aliases": ["state"]
+		}
+	}
+}

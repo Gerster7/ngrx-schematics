@@ -1,0 +1,30 @@
+import { createSelector } from '@ngrx/store';
+import {
+  <%= camelize(name) %>Feature,
+  adapter,
+} from '<%= path %>/<%= dasherize(name) %>/<%= dasherize(name) %>.reducer';
+
+// Desestructurar los selectores generados por 'createFeature'
+const { select<%= classify(name) %>State, selectLoading, selectError } = <%= camelize(name) %>Feature;
+
+// Selectores del adaptador de entidades para acceso eficiente
+const { selectAll, selectEntities } = adapter.getSelectors();
+
+// Todos los <%= dasherize(name) %> (array plano)
+export const selectAll<%= classify(name) %> = createSelector(select<%= classify(name) %>State, selectAll);
+
+// Diccionario para acceso O(1) por clave
+export const select<%= classify(name) %>Entities = createSelector(
+  select<%= classify(name) %>State,
+  selectEntities
+);
+
+// Lookup rápido por id
+export const select<%= classify(name) %>ById = (id: string) =>
+  createSelector(select<%= classify(name) %>Entities, (entities) => entities[id]);
+
+// Estado de carga
+export const select<%= classify(name) %>Loading = selectLoading;
+
+// Estado de error
+export const select<%= classify(name) %>Error = selectError;

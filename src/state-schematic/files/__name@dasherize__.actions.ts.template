@@ -1,0 +1,11 @@
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { <%= classify(name) %>Model } from 'src/app/core/services/<%= dasherize(name) %>/<%= dasherize(name) %>.model';
+
+export const <%= classify(name) %>Actions = createActionGroup({
+  source: '<%= classify(name) %>',
+  events: {
+    'Load <%= classify(name) %>': emptyProps(),
+    'Load <%= classify(name) %> Success': props<{ <%= camelize(name) %>: <%= classify(name) %>Model[] }>(),
+    'Load <%= classify(name) %> Failure': props<{ error: string }>(),
+  },
+});
