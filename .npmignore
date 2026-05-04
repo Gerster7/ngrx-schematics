@@ -1,4 +1,7 @@
+# Ignorar código fuente (no es necesario para el paquete)
 src/
 node_modules/
 tsconfig.json
-*.template
+*.log
+
+# NO ignorar dist/ — es lo que necesita npm
