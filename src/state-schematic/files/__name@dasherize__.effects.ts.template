@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { <%= classify(name) %>Actions } from '<%= path %>/<%= dasherize(name) %>/<%= dasherize(name) %>.actions';
-import { <%= classify(name) %>Service } from 'src/app/core/services/<%= dasherize(name) %>/<%= dasherize(name) %>.service';
+import { <%= classify(name) %>Actions } from './<%= dasherize(name) %>.actions';
+import { <%= classify(name) %>Service } from '<%= serviceImportDir %>/<%= dasherize(name) %>.service';
 
 export const load<%= classify(name) %>$ = createEffect(
   (actions$ = inject(Actions), service = inject(<%= classify(name) %>Service)) =>
