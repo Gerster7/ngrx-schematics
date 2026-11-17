@@ -8,6 +8,21 @@ Schematic para generar estados NgRx completos (actions, reducer, selectors, effe
 npm install ngrx-schematic --save-dev
 ```
 
+## Requisitos del proyecto
+
+- Angular y NgRx 17 o superior, con `@ngrx/store`, `@ngrx/effects` y `@ngrx/entity` instalados.
+- Un modelo y un servicio por estado, en esta ubicación y con esta forma (ejemplo para `orden-compra`):
+
+```
+src/app/core/services/orden-compra/
+├── orden-compra.model.ts     → export interface OrdenCompraModel { id: ...; ... }
+└── orden-compra.service.ts   → export class OrdenCompraService {
+                                  getOrdenCompra(): Observable<{ datos: OrdenCompraModel[] }>
+                                }
+```
+
+El effect generado llama a `get<Nombre>()` y carga en el store el array que viene en `datos`.
+
 ## Configuración (una sola vez por proyecto)
 
 Registrá el schematic en tu proyecto para poder usarlo con el alias corto `state`:
@@ -47,10 +62,10 @@ ng generate state
 
 ## Opciones
 
-| Opción   | Tipo     | Default                  | Descripción                              |
-|----------|----------|--------------------------|------------------------------------------|
-| `name`   | `string` | *(obligatorio)*          | Nombre del estado (ej: `producto`)       |
-| `path`   | `string` | `src/app/core/state`     | Ruta destino de los archivos generados   |
+| Opción | Tipo     | Default              | Descripción |
+|--------|----------|----------------------|-------------|
+| `name` | `string` | *(obligatorio)*      | Nombre del estado (ej: `producto`, `orden-compra`, `detalleFactura`). Empieza con letra; solo letras, números y `-` o `_` entre palabras. No acepta palabras reservadas de JavaScript ni `state`/`adapter`. |
+| `path` | `string` | `src/app/core/state` | Carpeta destino, relativa a la raíz del workspace. No puede apuntar fuera de él. |
 
 ## Archivos generados
 
@@ -64,16 +79,36 @@ src/app/features/state/producto/
 └── producto.selectors.ts
 ```
 
+## Registrar el estado
+
+El schematic no modifica la configuración de la app. Registrá el feature y los effects donde corresponda (ej: `app.config.ts`, con `provideStore()` ya configurado):
+
+```ts
+import { provideState } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { productoFeature } from './core/state/producto/producto.reducer';
+import * as productoEffects from './core/state/producto/producto.effects';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // ...
+    provideState(productoFeature),
+    provideEffects(productoEffects),
+  ],
+};
+```
+
 ## Notas
 
 - En `reducer.ts` ajustá `selectId` para que apunte a la clave primaria real de tu modelo (por defecto usa `.id`).
-- Los imports en effects y selectors usan el `path` que indicaste, no uno hardcodeado.
+- La clave del feature en el store es el nombre en camelCase (`orden-compra` → `ordenCompra`).
+- Todos los imports del código generado son relativos: no requieren `baseUrl` ni `paths` en el `tsconfig`.
 
 ## Desarrollo local
 
 ```bash
 npm install
-npm run build
+npm test        # build + tests: genera estados y los compila contra NgRx real
 # En tu proyecto Angular:
 npm install ../ruta/a/ngrx-schematics
 ng generate ngrx-schematic:state producto
