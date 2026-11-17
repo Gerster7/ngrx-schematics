@@ -14,8 +14,8 @@
 	"schematics": "./dist/collection.json",
 	"scripts": {
 		"build": "tsc -p tsconfig.json && npm run copy:json && npm run copy:files",
-		"copy:json": "copyfiles -u 1 src/**/*.json dist/",
-		"copy:files": "copyfiles -u 1 src/state-schematic/files/**/* dist/"
+		"copy:json": "copyfiles -u 1 \"src/**/*.json\" dist/",
+		"copy:files": "copyfiles -u 1 \"src/state-schematic/files/**/*\" dist/"
 	},
 	"dependencies": {},
 	"peerDependencies": {
