@@ -1,7 +1,7 @@
 import { after, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
@@ -34,6 +34,26 @@ function writeServiceStubs(workspace, name) {
 			`  get${className}(): Observable<{ datos: ${className}Model[] }> {\n` +
 			`    return of({ datos: [] });\n  }\n}\n`
 	);
+}
+
+// Registra cada estado como indica el README, para validar que provideState/provideEffects aceptan lo generado.
+function writeAppConfig(workspace, registrations) {
+	const imports = registrations.flatMap(({ id, modulePath }) => [
+		`import { ${id}Feature } from '${modulePath}.reducer';`,
+		`import * as ${id}Effects from '${modulePath}.effects';`,
+	]);
+	const providers = registrations.flatMap(({ id }) => [`provideState(${id}Feature)`, `provideEffects(${id}Effects)`]);
+	const appConfigFile = join(workspace, 'src/app/app.config.ts');
+	writeFileSync(
+		appConfigFile,
+		`import { ApplicationConfig } from '@angular/core';\n` +
+			`import { provideState, provideStore } from '@ngrx/store';\n` +
+			`import { provideEffects } from '@ngrx/effects';\n` +
+			`${imports.join('\n')}\n\n` +
+			`export const appConfig: ApplicationConfig = {\n` +
+			`  providers: [provideStore(), ${providers.join(', ')}],\n};\n`
+	);
+	return appConfigFile;
 }
 
 // Opciones equivalentes al tsconfig strict que genera el Angular CLI.
@@ -128,6 +148,7 @@ describe('state schematic', () => {
 
 		it(cases.map((c) => c.name).join(', '), async () => {
 			const rootFiles = [];
+			const registrations = [];
 			for (const options of cases) {
 				const tree = await generate(options);
 				for (const file of tree.files) {
@@ -137,7 +158,14 @@ describe('state schematic', () => {
 					rootFiles.push(target);
 				}
 				writeServiceStubs(workspace, options.name);
+
+				const stateDir = posix.dirname(tree.files.find((file) => file.endsWith('.reducer.ts')));
+				registrations.push({
+					id: strings.camelize(options.name),
+					modulePath: `./${posix.relative('/src/app', stateDir)}/${strings.dasherize(options.name)}`,
+				});
 			}
+			rootFiles.push(writeAppConfig(workspace, registrations));
 			assert.equal(typecheck(workspace, rootFiles), '');
 		});
 	});
