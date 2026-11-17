@@ -12,6 +12,9 @@
 	"license": "MIT",
 	"main": "dist/collection.json",
 	"schematics": "./dist/collection.json",
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
 		"build": "npm run clean && tsc -p tsconfig.json && npm run copy:json && npm run copy:files",
