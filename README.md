@@ -1,11 +1,11 @@
-# ngrx-state-schematic
+# ngrx-schematic
 
 Schematic para generar estados NgRx completos (actions, reducer, selectors, effects) en proyectos Angular.
 
 ## Instalación
 
 ```bash
-npm install ngrx-state-schematic --save-dev
+npm install ngrx-schematic --save-dev
 ```
 
 ## Configuración (una sola vez por proyecto)
@@ -13,7 +13,7 @@ npm install ngrx-state-schematic --save-dev
 Registrá el schematic en tu proyecto para poder usarlo con el alias corto `state`:
 
 ```bash
-ng config cli.schematicCollections '["ngrx-state-schematic"]'
+ng config cli.schematicCollections '["ngrx-schematic"]'
 ```
 
 Esto agrega la siguiente línea en tu `angular.json`:
@@ -21,12 +21,12 @@ Esto agrega la siguiente línea en tu `angular.json`:
 ```json
 {
   "cli": {
-    "schematicCollections": ["ngrx-state-schematic"]
+    "schematicCollections": ["ngrx-schematic"]
   }
 }
 ```
 
-A partir de ahí ya no necesitás escribir el prefijo `ngrx-state-schematic:` nunca más.
+A partir de ahí ya no necesitás escribir el prefijo `ngrx-schematic:` nunca más.
 
 ## Uso
 
@@ -54,7 +54,7 @@ ng generate state
 
 ## Archivos generados
 
-Dado `ng generate ngrx-state-schematic:state producto --path src/app/features/state`:
+Dado `ng generate ngrx-schematic:state producto --path src/app/features/state`:
 
 ```
 src/app/features/state/producto/
@@ -75,6 +75,6 @@ src/app/features/state/producto/
 npm install
 npm run build
 # En tu proyecto Angular:
-npm install ../ruta/a/ngrx-state-schematic
-ng generate ngrx-state-schematic:state producto
+npm install ../ruta/a/ngrx-schematics
+ng generate ngrx-schematic:state producto
 ```
