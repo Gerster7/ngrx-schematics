@@ -8,8 +8,19 @@ import {
 	mergeWith,
 	applyTemplates,
 } from '@angular-devkit/schematics';
-import { strings, normalize } from '@angular-devkit/core';
+import { Path, join, normalize, relative, strings } from '@angular-devkit/core';
 import { Schema as StateOptions } from './schema';
+
+const WORKSPACE_ROOT = normalize('/');
+const SERVICES_DIR = normalize('/src/app/core/services');
+
+function toImportPath(fromDir: Path, toDir: Path): string {
+	const relativePath = relative(fromDir, toDir);
+	if (!relativePath) {
+		return '.';
+	}
+	return relativePath.startsWith('.') ? relativePath : `./${relativePath}`;
+}
 
 export function stateSchematic(options: StateOptions): Rule {
 	return (_tree: Tree, _context: SchematicContext) => {
@@ -17,25 +28,22 @@ export function stateSchematic(options: StateOptions): Rule {
 			throw new Error('El nombre del estado es obligatorio.');
 		}
 
-		// Ruta destino: usa el path indicado o el default del schema
-		const targetPath = normalize(
-			`${options.path}/${strings.dasherize(options.name)}`
-		);
+		const fileName = strings.dasherize(options.name);
+		const targetDir = join(WORKSPACE_ROOT, options.path, fileName);
 
-		// Apuntamos a la carpeta "files" (donde están los .ts.template)
-		const sourceTemplates = url('./files');
+		// Imports relativos: no dependen de baseUrl/paths del tsconfig del consumidor.
+		const serviceImportDir = toImportPath(targetDir, join(SERVICES_DIR, fileName));
 
-		// Aplicamos helpers de strings (classify, dasherize, etc.)
-		// Angular Schematics elimina automáticamente el sufijo ".template"
-		const sourceParameterized = apply(sourceTemplates, [
+		// applyTemplates resuelve __name@dasherize__ y quita el sufijo ".template"
+		const sourceParameterized = apply(url('./files'), [
 			applyTemplates({
 				...options,
 				...strings,
+				serviceImportDir,
 			}),
-			move(targetPath),
+			move(targetDir),
 		]);
 
-		// Fusionamos todo
 		return mergeWith(sourceParameterized);
 	};
 }

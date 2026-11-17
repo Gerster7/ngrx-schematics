@@ -1,6 +1,6 @@
 import { createReducer, on, createFeature } from '@ngrx/store';
-import { <%= classify(name) %>Actions } from '<%= path %>/<%= dasherize(name) %>/<%= dasherize(name) %>.actions';
-import { <%= classify(name) %>Model } from 'src/app/core/services/<%= dasherize(name) %>/<%= dasherize(name) %>.model';
+import { <%= classify(name) %>Actions } from './<%= dasherize(name) %>.actions';
+import { <%= classify(name) %>Model } from '<%= serviceImportDir %>/<%= dasherize(name) %>.model';
 import {
   EntityState,
   createEntityAdapter,

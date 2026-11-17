@@ -51,7 +51,6 @@ function typecheck(workspace, rootFiles) {
 		noFallthroughCasesInSwitch: true,
 		useDefineForClassFields: false,
 		types: [],
-		baseUrl: workspace,
 	});
 	const diagnostics = ts.getPreEmitDiagnostics(program);
 	return ts.formatDiagnostics(diagnostics, {
@@ -87,6 +86,9 @@ describe('state schematic', () => {
 			{ name: 'detalle_pedido' },
 			{ name: 'usuarioRol' },
 			{ name: 'Cliente', path: 'src/app/features/ventas/state' },
+			{ name: 'linea-factura', path: './src/app/features/facturacion/' },
+			{ name: 'remito', path: 'src\\app\\features\\logistica' },
+			{ name: 'deposito', path: 'src/app/core/services/deposito' },
 		];
 
 		it(cases.map((c) => c.name).join(', '), async () => {

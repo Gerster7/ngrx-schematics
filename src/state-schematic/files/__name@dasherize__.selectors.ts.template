@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import {
   <%= camelize(name) %>Feature,
   adapter,
-} from '<%= path %>/<%= dasherize(name) %>/<%= dasherize(name) %>.reducer';
+} from './<%= dasherize(name) %>.reducer';
 
 // Desestructurar los selectores generados por 'createFeature'
 const { select<%= classify(name) %>State, selectLoading, selectError } = <%= camelize(name) %>Feature;

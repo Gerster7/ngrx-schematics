@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { <%= classify(name) %>Model } from 'src/app/core/services/<%= dasherize(name) %>/<%= dasherize(name) %>.model';
+import { <%= classify(name) %>Model } from '<%= serviceImportDir %>/<%= dasherize(name) %>.model';
 
 export const <%= classify(name) %>Actions = createActionGroup({
   source: '<%= classify(name) %>',
