@@ -6,7 +6,8 @@
 	"properties": {
 		"name": {
 			"type": "string",
-			"description": "Nombre del estado NgRx a generar (ej: producto, usuario, carrito).",
+			"description": "Nombre del estado NgRx a generar (ej: producto, orden-compra, detalleFactura). Empieza con letra; solo letras, números y separadores - o _ entre palabras.",
+			"pattern": "^[a-zA-Z][a-zA-Z0-9]*(?:[-_][a-zA-Z0-9]+)*$",
 			"$default": {
 				"$source": "argv",
 				"index": 0

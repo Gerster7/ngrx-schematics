@@ -74,6 +74,41 @@ describe('state schematic', () => {
 		assert.ok(tree.exists('/src/app/core/state/producto/producto.reducer.ts'));
 	});
 
+	describe('validación de opciones', () => {
+		for (const name of ['1producto', 'orden compra', 'orden--compra', 'producto-', '../producto', '']) {
+			it(`rechaza el nombre con formato inválido ${JSON.stringify(name)}`, async () => {
+				await assert.rejects(generate({ name }), /must match pattern/);
+			});
+		}
+
+		for (const name of ['class', 'Delete', 'yield']) {
+			it(`rechaza la palabra reservada "${name}"`, async () => {
+				await assert.rejects(generate({ name }), /palabra reservada/);
+			});
+		}
+
+		for (const name of ['state', 'adapter']) {
+			it(`rechaza "${name}" porque choca con el código generado`, async () => {
+				await assert.rejects(generate({ name }), /choca con identificadores/);
+			});
+		}
+
+		for (const path of ['../fuera', 'src/../../fuera', '/..', '..\\fuera']) {
+			it(`rechaza el path fuera del workspace ${JSON.stringify(path)}`, async () => {
+				await assert.rejects(generate({ name: 'producto', path }), /fuera del workspace/);
+			});
+		}
+
+		it('rechaza rutas absolutas del sistema', async () => {
+			await assert.rejects(generate({ name: 'producto', path: 'C:\\proyecto\\src' }), /ruta absoluta/);
+		});
+
+		it('acepta un path con / inicial como relativo al workspace', async () => {
+			const tree = await generate({ name: 'producto', path: '/src/app/state' });
+			assert.ok(tree.exists('/src/app/state/producto/producto.actions.ts'));
+		});
+	});
+
 	describe('el código generado compila contra NgRx', () => {
 		const tmpRoot = join(repoRoot, '.tmp');
 		mkdirSync(tmpRoot, { recursive: true });
