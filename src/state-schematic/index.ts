@@ -4,7 +4,6 @@ import {
 	Tree,
 	apply,
 	url,
-	template,
 	move,
 	mergeWith,
 	applyTemplates,
