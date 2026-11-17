@@ -52,6 +52,6 @@ export const <%= camelize(name) %>Reducer = createReducer(
 );
 
 export const <%= camelize(name) %>Feature = createFeature({
-  name: '<%= dasherize(name) %>',
+  name: '<%= camelize(name) %>',
   reducer: <%= camelize(name) %>Reducer,
 });
